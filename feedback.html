@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AnimeRec - Feedback</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #ff4c4c;
+      --dark-bg: #121212;
+      --card-bg: #1f1f1f;
+      --text-light: #ffffff;
+      --text-muted: #cccccc;
+    }
+    
+    body {
+      background-color: var(--dark-bg);
+      color: var(--text-light);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding-top: 56px; /* Account for fixed navbar */
+    }
+    
+    .navbar-custom {
+      background-color: var(--card-bg);
+      border-bottom: 2px solid var(--primary-color);
+    }
+    
+    .navbar-custom .navbar-brand,
+    .navbar-custom .nav-link {
+      color: var(--text-light);
+    }
+    
+    .navbar-custom .nav-link:hover {
+      color: var(--primary-color);
+    }
+    
+    .navbar-custom .nav-link.active {
+      color: var(--primary-color);
+      font-weight: bold;
+    }
+    
+    .logo img {
+      max-height: 50px;
+      transition: transform 0.3s;
+    }
+    
+    .logo img:hover {
+      transform: scale(1.1);
+    }
+    
+    .main-content {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    
+    h2 {
+      color: var(--primary-color);
+      text-align: center;
+      margin-bottom: 30px;
+      position: relative;
+      padding-bottom: 10px;
+    }
+    
+    h2::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 3px;
+      background-color: var(--primary-color);
+    }
+    
+    .feedback-form {
+      background-color: var(--card-bg);
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      border-left: 5px solid var(--primary-color);
+    }
+    
+    .form-label {
+      color: var(--primary-color);
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+    
+    .form-control {
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: var(--text-light);
+      margin-bottom: 20px;
+    }
+    
+    .form-control:focus {
+      background-color: rgba(255, 255, 255, 0.15);
+      border-color: var(--primary-color);
+      color: var(--text-light);
+      box-shadow: 0 0 0 0.25rem rgba(255, 76, 76, 0.25);
+    }
+    
+    .form-select {
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: var(--text-light);
+      margin-bottom: 20px;
+    }
+    
+    .form-select:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 0.25rem rgba(255, 76, 76, 0.25);
+    }
+    
+    textarea.form-control {
+      min-height: 150px;
+      resize: vertical;
+    }
+    
+    .btn-submit {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 10px 25px;
+      font-weight: 500;
+      border-radius: 5px;
+      transition: all 0.3s;
+      width: 100%;
+      margin-top: 10px;
+    }
+    
+    .btn-submit:hover {
+      background-color: #e63939;
+      transform: translateY(-2px);
+    }
+    
+    .rating-stars {
+      margin-bottom: 20px;
+    }
+    
+    .rating-stars i {
+      color: var(--text-muted);
+      font-size: 1.5rem;
+      margin-right: 5px;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    
+    .rating-stars i.hover,
+    .rating-stars i.active {
+      color: var(--primary-color);
+    }
+    
+    .form-check-input {
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .form-check-input:checked {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+    }
+    
+    .form-check-label {
+      margin-left: 5px;
+    }
+    
+    footer {
+      background-color: var(--card-bg);
+      color: var(--text-muted);
+      text-align: center;
+      padding: 30px 0;
+      margin-top: 50px;
+      border-top: 2px solid var(--primary-color);
+    }
+    
+    .social-links a {
+      color: var(--text-muted);
+      margin: 0 10px;
+      font-size: 1.2rem;
+      transition: color 0.3s;
+    }
+    
+    .social-links a:hover {
+      color: var(--primary-color);
+    }
+    
+    /* Fixed navbar toggler icon color */
+    .navbar-toggler-icon {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.55%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+    
+    @media (max-width: 768px) {
+      .feedback-form {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
+    <div class="container">
+      <a class="navbar-brand logo" href="index.html">
+        <img src="images/icon.jpg" alt="AnimeRec Logo">
+        <span class="d-inline-block align-middle ms-2">AnimeRec</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="genre.html">Genre</a></li>
+          <li class="nav-item"><a class="nav-link" href="description.html">Description</a></li>
+          <li class="nav-item"><a class="nav-link" href="about.html">About Us</a></li>
+          <li class="nav-item"><a class="nav-link active" href="feedback.html">Feedback</a></li>
+        </ul>
+        <div class="d-flex search-box">
+          <input class="form-control me-2" type="search" placeholder="Search anime..." id="searchInput">
+          <button class="btn btn-outline-light" type="button"><i class="fas fa-search"></i></button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    <h2>Share Your Feedback</h2>
+    <form action="#" method="POST" class="feedback-form">
+      <div class="mb-3">
+        <label for="name" class="form-label">Your Name</label>
+        <input type="text" class="form-control" id="name" name="name" required>
+      </div>
+      
+      <div class="mb-3">
+        <label for="email" class="form-label">Email Address</label>
+        <input type="email" class="form-control" id="email" name="email" required>
+      </div>
+      
+      <div class="mb-3">
+        <label class="form-label">How would you rate our site?</label>
+        <div class="rating-stars">
+          <i class="far fa-star" data-rating="1"></i>
+          <i class="far fa-star" data-rating="2"></i>
+          <i class="far fa-star" data-rating="3"></i>
+          <i class="far fa-star" data-rating="4"></i>
+          <i class="far fa-star" data-rating="5"></i>
+        </div>
+        <input type="hidden" id="rating" name="rating" value="0">
+      </div>
+      
+      <div class="mb-3">
+        <label for="genre" class="form-label">Favorite Anime Genre</label>
+        <select class="form-select" id="genre" name="genre">
+          <option value="" selected disabled>Select your favorite genre</option>
+          <option value="action">Action</option>
+          <option value="adventure">Adventure</option>
+          <option value="comedy">Comedy</option>
+          <option value="drama">Drama</option>
+          <option value="fantasy">Fantasy</option>
+          <option value="horror">Horror</option>
+          <option value="isekai">Isekai</option>
+          <option value="mecha">Mecha</option>
+          <option value="mystery">Mystery</option>
+          <option value="romance">Romance</option>
+          <option value="sci-fi">Sci-Fi</option>
+          <option value="shounen">Shounen</option>
+          <option value="shoujo">Shoujo</option>
+          <option value="seinen">Seinen</option>
+          <option value="josei">Josei</option>
+          <option value="sports">Sports</option>
+          <option value="slice-of-life">Slice of Life</option>
+        </select>
+      </div>
+      
+      <div class="mb-3">
+        <label class="form-label">Type of Feedback</label>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="feedback-type" id="suggestion" value="suggestion" checked>
+          <label class="form-check-label" for="suggestion">
+            Suggestion
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="feedback-type" id="bug-report" value="bug-report">
+          <label class="form-check-label" for="bug-report">
+            Bug Report
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="feedback-type" id="compliment" value="compliment">
+          <label class="form-check-label" for="compliment">
+            Compliment
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="feedback-type" id="other" value="other">
+          <label class="form-check-label" for="other">
+            Other
+          </label>
+        </div>
+      </div>
+      
+      <div class="mb-3">
+        <label for="message" class="form-label">Your Feedback</label>
+        <textarea class="form-control" id="message" name="message" required></textarea>
+      </div>
+      
+      <div class="form-check mb-4">
+        <input class="form-check-input" type="checkbox" id="newsletter" name="newsletter" checked>
+        <label class="form-check-label" for="newsletter">
+          Subscribe to our newsletter
+        </label>
+      </div>
+      
+      <button type="submit" class="btn btn-submit">
+        <i class="fas fa-paper-plane me-2"></i> Submit Feedback
+      </button>
+    </form>
+  </main>
+
+  <footer>
+    <p>&copy; 2023 AnimeRec. All rights reserved.</p>
+    <div class="social-links">
+      <a href="#"><i class="fab fa-twitter"></i></a>
+      <a href="#"><i class="fab fa-facebook"></i></a>
+      <a href="#"><i class="fab fa-instagram"></i></a>
+      <a href="#"><i class="fab fa-discord"></i></a>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+    // Star rating functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const stars = document.querySelectorAll('.rating-stars i');
+      const ratingInput = document.getElementById('rating');
+      
+      // Initialize stars based on hidden input value
+      function updateStars() {
+        const currentRating = parseInt(ratingInput.value);
+        stars.forEach((star, index) => {
+          if (index < currentRating) {
+            star.classList.remove('far');
+            star.classList.add('fas', 'active');
+          } else {
+            star.classList.remove('fas', 'active');
+            star.classList.add('far');
+          }
+        });
+      }
+      
+      stars.forEach(star => {
+        star.addEventListener('click', function() {
+          ratingInput.value = this.getAttribute('data-rating');
+          updateStars();
+        });
+        
+        star.addEventListener('mouseover', function() {
+          const hoverRating = this.getAttribute('data-rating');
+          
+          stars.forEach((s, index) => {
+            if (index < hoverRating) {
+              s.classList.add('hover');
+            } else {
+              s.classList.remove('hover');
+            }
+          });
+        });
+        
+        star.addEventListener('mouseout', function() {
+          stars.forEach(s => {
+            s.classList.remove('hover');
+          });
+        });
+      });
+      
+      // Form submission handling
+      const form = document.querySelector('.feedback-form');
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Validate form
+        if (ratingInput.value === '0') {
+          alert('Please provide a rating by clicking the stars');
+          return;
+        }
+        
+        // Get form data
+        const formData = new FormData(form);
+        const feedbackData = {};
+        formData.forEach((value, key) => {
+          feedbackData[key] = value;
+        });
+        
+        // Here you would normally send the data to a server
+        console.log('Feedback submitted:', feedbackData);
+        
+        // Show success message
+        alert('Thank you for your feedback! We appreciate your input.');
+        
+        // Reset form
+        form.reset();
+        ratingInput.value = '0';
+        updateStars();
+      });
+    });
+  </script>
+</body>
+</html>

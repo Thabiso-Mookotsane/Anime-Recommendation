@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AnimeRec - Descriptions</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #ff4c4c;
+      --dark-bg: #121212;
+      --card-bg: #1f1f1f;
+      --text-light: #ffffff;
+      --text-muted: #cccccc;
+      --highlight-color: rgba(255, 76, 76, 0.3);
+    }
+    
+    body {
+      background-color: var(--dark-bg);
+      color: var(--text-light);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding-top: 70px;
+    }
+    
+    .navbar-custom {
+      background-color: var(--card-bg);
+      border-bottom: 2px solid var(--primary-color);
+    }
+    
+    .navbar-custom .navbar-brand,
+    .navbar-custom .nav-link {
+      color: var(--text-light);
+    }
+    
+    .navbar-custom .nav-link:hover {
+      color: var(--primary-color);
+    }
+    
+    .navbar-custom .nav-link.active {
+      color: var(--primary-color);
+      font-weight: bold;
+    }
+    
+    .navbar-toggler {
+      border-color: rgba(255, 255, 255, 0.1);
+      color: var(--text-light);
+    }
+    
+    .navbar-toggler-icon {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.75%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+    
+    .navbar-collapse {
+      background-color: var(--card-bg);
+      padding: 15px;
+      border-radius: 5px;
+      margin-top: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .logo img {
+      max-height: 50px;
+      transition: transform 0.3s;
+    }
+    
+    .logo img:hover {
+      transform: scale(1.1);
+    }
+    
+    .main-content {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    
+    .anime-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+    
+    .anime-section {
+      background-color: var(--card-bg);
+      border-radius: 10px;
+      padding: 25px;
+      border-left: 5px solid var(--primary-color);
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: pointer;
+    }
+    
+    .anime-section:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(255, 76, 76, 0.1);
+    }
+    
+    .anime-section.highlighted {
+      background-color: var(--highlight-color);
+      box-shadow: 0 0 15px var(--primary-color);
+    }
+    
+    .anime-section h3 {
+      color: var(--primary-color);
+      margin-bottom: 15px;
+      font-size: 1.4rem;
+      border-bottom: 1px solid rgba(255, 76, 76, 0.3);
+      padding-bottom: 8px;
+    }
+    
+    .anime-section p {
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+    
+    .search-box {
+      max-width: 500px;
+      margin: 20px auto;
+      position: relative;
+    }
+    
+    .search-box input {
+      background-color: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 25px;
+      width: 100%;
+    }
+    
+    .search-box input:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--primary-color);
+    }
+    
+    .search-highlight {
+      background-color: var(--highlight-color);
+      color: var(--text-light);
+      font-weight: bold;
+      padding: 0 2px;
+      border-radius: 3px;
+    }
+    
+    .genre-filter {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 30px;
+      justify-content: center;
+    }
+    
+    .genre-btn {
+      background-color: rgba(255, 76, 76, 0.2);
+      color: var(--text-light);
+      border: none;
+      padding: 8px 15px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .genre-btn:hover, .genre-btn.active {
+      background-color: var(--primary-color);
+      color: white;
+    }
+    
+    footer {
+      background-color: var(--card-bg);
+      color: var(--text-muted);
+      text-align: center;
+      padding: 30px 0;
+      margin-top: 50px;
+      border-top: 2px solid var(--primary-color);
+    }
+    
+    .social-links a {
+      color: var(--text-muted);
+      margin: 0 10px;
+      font-size: 1.2rem;
+      transition: color 0.3s;
+    }
+    
+    .social-links a:hover {
+      color: var(--primary-color);
+    }
+    
+    @media (max-width: 768px) {
+      .anime-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .genre-filter {
+        flex-direction: row;
+        overflow-x: auto;
+        padding-bottom: 10px;
+        justify-content: flex-start;
+        -webkit-overflow-scrolling: touch;
+      }
+      
+      .genre-filter::-webkit-scrollbar {
+        height: 5px;
+      }
+      
+      .genre-filter::-webkit-scrollbar-thumb {
+        background-color: var(--primary-color);
+        border-radius: 10px;
+      }
+      
+      .genre-btn {
+        white-space: nowrap;
+      }
+      
+      .search-box {
+        width: 100%;
+        margin: 15px 0;
+      }
+      
+      .navbar-collapse {
+        position: absolute;
+        width: calc(100% - 30px);
+        left: 15px;
+        top: 70px;
+        z-index: 1000;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      body {
+        padding-top: 60px;
+      }
+      
+      .anime-section {
+        padding: 15px;
+      }
+      
+      .anime-section h3 {
+        font-size: 1.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
+    <div class="container">
+      <a class="navbar-brand logo" href="index.html">
+        <img src="images/icon.jpg" alt="AnimeRec Logo">
+        <span class="d-inline-block align-middle ms-2">AnimeRec</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="genre.html">Genre</a></li>
+          <li class="nav-item"><a class="nav-link active" href="description.html">Description</a></li>
+          <li class="nav-item"><a class="nav-link" href="about.html">About Us</a></li>
+          <li class="nav-item"><a class="nav-link" href="feedback.html">Feedback</a></li>
+        </ul>
+        <div class="d-flex search-box">
+          <input class="form-control me-2" type="search" placeholder="Search anime..." id="searchInput" oninput="searchAnime()">
+          <button class="btn btn-outline-light" type="button"><i class="fas fa-search"></i></button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    <div class="genre-filter">
+      <button class="genre-btn" onclick="filterGenre('all')">All</button>
+      <button class="genre-btn" onclick="filterGenre('action')">Action</button>
+      <button class="genre-btn" onclick="filterGenre('adventure')">Adventure</button>
+      <button class="genre-btn" onclick="filterGenre('romance')">Romance</button>
+      <button class="genre-btn" onclick="filterGenre('horror')">Horror</button>
+      <button class="genre-btn" onclick="filterGenre('scifi')">Sci-Fi</button>
+      <button class="genre-btn" onclick="filterGenre('comedy')">Comedy</button>
+      <button class="genre-btn" onclick="filterGenre('drama')">Drama</button>
+      <button class="genre-btn" onclick="filterGenre('fantasy')">Fantasy</button>
+    </div>
+
+    <div class="anime-grid">
+      <section class="anime-section" id="attack-on-titan" data-genre="action" onclick="highlightAnime(this)">
+        <h3>Attack on Titan</h3>
+        <p>Humanity battles for survival behind giant walls against mysterious, man-eating Titans. Eren Yeager joins the fight to uncover secrets about the world and the true nature of the Titans that threaten humanity's existence.</p>
+      </section>
+
+      <section class="anime-section" id="demon-slayer" data-genre="action" onclick="highlightAnime(this)">
+        <h3>Demon Slayer</h3>
+        <p>Tanjiro Kamado becomes a demon slayer to save his sister and avenge his family, fighting demons with breathtaking sword techniques and uncovering the mysteries of the demon-slaying corps.</p>
+      </section>
+
+      <section class="anime-section" id="one-piece" data-genre="adventure" onclick="highlightAnime(this)">
+        <h3>One Piece</h3>
+        <p>Monkey D. Luffy sets out to become the King of the Pirates by finding the fabled One Piece treasure across the Grand Line, gathering a diverse crew and facing powerful foes in an epic sea-faring adventure.</p>
+      </section>
+
+      <section class="anime-section" id="jujutsu-kaisen" data-genre="action" onclick="highlightAnime(this)">
+        <h3>Jujutsu Kaisen</h3>
+        <p>A high schooler swallows a cursed object and joins a secret organization to fight curses and save humanity, learning powerful techniques while uncovering dark secrets about the jujutsu world.</p>
+      </section>
+
+      <section class="anime-section" id="black-clover" data-genre="fantasy" onclick="highlightAnime(this)">
+        <h3>Black Clover</h3>
+        <p>Asta, born without magic in a magical world, strives to become the Wizard King using pure strength and determination, proving that hard work can overcome natural talent.</p>
+      </section>
+
+      <section class="anime-section" id="your-name" data-genre="romance" onclick="highlightAnime(this)">
+        <h3>Your Name</h3>
+        <p>A boy and girl switch bodies across space and time, forming a bond that defies logic and fate in this visually stunning tale of love, connection, and cosmic destiny.</p>
+      </section>
+
+      <section class="anime-section" id="clannad" data-genre="drama" onclick="highlightAnime(this)">
+        <h3>Clannad</h3>
+        <p>A high school delinquent's life changes after meeting a shy girl with big dreams and forming deep emotional connections that explore themes of family, love, and personal growth.</p>
+      </section>
+
+      <section class="anime-section" id="toradora" data-genre="romance" onclick="highlightAnime(this)">
+        <h3>Toradora!</h3>
+        <p>Two classmates team up to help each other win their crushes, only to discover they may be meant for each other in this heartwarming romantic comedy about misunderstandings and true feelings.</p>
+      </section>
+
+      <section class="anime-section" id="fruits-basket" data-genre="drama" onclick="highlightAnime(this)">
+        <h3>Fruits Basket</h3>
+        <p>A girl discovers her classmates are cursed to transform into zodiac animals and helps them overcome their emotional traumas while learning about acceptance and the power of kindness.</p>
+      </section>
+
+      <section class="anime-section" id="your-lie-in-april" data-genre="drama" onclick="highlightAnime(this)">
+        <h3>Your Lie in April</h3>
+        <p>A piano prodigy finds color in life again through a bold violinist who teaches him about love, loss, and music in this emotionally powerful story about art and human connection.</p>
+      </section>
+
+      <section class="anime-section" id="tokyo-ghoul" data-genre="horror" onclick="highlightAnime(this)">
+        <h3>Tokyo Ghoul</h3>
+        <p>Kaneki, a shy student, becomes a half-ghoul and must balance his humanity with his monstrous instincts while navigating the dangerous world of ghouls and their hunters.</p>
+      </section>
+
+      <section class="anime-section" id="another" data-genre="horror" onclick="highlightAnime(this)">
+        <h3>Another</h3>
+        <p>A curse haunts a classroom where mysterious deaths occur, and a new transfer student must uncover the truth before becoming the next victim in this chilling supernatural mystery.</p>
+      </section>
+
+      <section class="anime-section" id="elfen-lied" data-genre="horror" onclick="highlightAnime(this)">
+        <h3>Elfen Lied</h3>
+        <p>A girl with invisible psychic arms escapes a lab and causes havoc while rediscovering her humanity in this dark and violent exploration of what it means to be human.</p>
+      </section>
+
+      <section class="anime-section" id="higurashi" data-genre="horror" onclick="highlightAnime(this)">
+        <h3>Higurashi</h3>
+        <p>A seemingly peaceful village harbors dark secrets and a deadly curse that unravels over repeating timelines, blending psychological horror with mystery elements.</p>
+      </section>
+
+      <section class="anime-section" id="parasyte" data-genre="scifi" onclick="highlightAnime(this)">
+        <h3>Parasyte</h3>
+        <p>After being infected by a parasitic alien, a boy must learn to coexist with the creature while fighting off others like it, leading to philosophical questions about humanity and nature.</p>
+      </section>
+
+      <section class="anime-section" id="steins-gate" data-genre="scifi" onclick="highlightAnime(this)">
+        <h3>Steins;Gate</h3>
+        <p>A mad scientist discovers time travel, leading to alternate futures and heavy consequences with every change in this mind-bending sci-fi thriller about cause and effect.</p>
+      </section>
+
+      <section class="anime-section" id="cowboy-bebop" data-genre="scifi" onclick="highlightAnime(this)">
+        <h3>Cowboy Bebop</h3>
+        <p>A ragtag crew of bounty hunters travel the galaxy dealing with past regrets and thrilling space missions in this stylish blend of sci-fi, noir, and western elements.</p>
+      </section>
+
+      <section class="anime-section" id="psycho-pass" data-genre="scifi" onclick="highlightAnime(this)">
+        <h3>Psycho-Pass</h3>
+        <p>In a future where emotions are scanned for criminal potential, one detective starts questioning the system in this cyberpunk exploration of free will versus security.</p>
+      </section>
+
+      <section class="anime-section" id="neon-genesis-evangelion" data-genre="scifi" onclick="highlightAnime(this)">
+        <h3>Neon Genesis Evangelion</h3>
+        <p>Teen pilots battle alien threats using giant mechs while wrestling with mental and emotional trauma in this psychologically complex mecha series that redefined the genre.</p>
+      </section>
+
+      <section class="anime-section" id="ergo-proxy" data-genre="scifi" onclick="highlightAnime(this)">
+        <h3>Ergo Proxy</h3>
+        <p>A post-apocalyptic journey that explores humanity, AI, and existential questions in a decaying world filled with philosophical themes and stunning visuals.</p>
+      </section>
+
+      <section class="anime-section" id="konosuba" data-genre="comedy" onclick="highlightAnime(this)">
+        <h3>Konosuba</h3>
+        <p>A shut-in gamer dies and is reincarnated in a fantasy world where everything hilariously goes wrong, parodying isekai tropes with outrageous humor.</p>
+      </section>
+
+      <section class="anime-section" id="one-punch-man" data-genre="comedy" onclick="highlightAnime(this)">
+        <h3>One Punch Man</h3>
+        <p>Saitama can defeat anyone with one punch, but struggles with boredom and finding a real challenge in this hilarious satire of superhero tropes.</p>
+      </section>
+
+      <section class="anime-section" id="gintama" data-genre="comedy" onclick="highlightAnime(this)">
+        <h3>Gintama</h3>
+        <p>A samurai and his oddball crew take on absurd tasks in a sci-fi comedy filled with parodies, action, and surprisingly heartfelt moments.</p>
+      </section>
+
+      <section class="anime-section" id="saiki-k" data-genre="comedy" onclick="highlightAnime(this)">
+        <h3>Saiki K</h3>
+        <p>A powerful psychic just wants a normal life but his bizarre classmates keep ruining it in this rapid-fire comedy packed with supernatural gags.</p>
+      </section>
+
+      <section class="anime-section" id="nichijou" data-genre="comedy" onclick="highlightAnime(this)">
+        <h3>Nichijou</h3>
+        <p>Everyday school life becomes absurdly hilarious with talking cats, robot girls, and random explosions in this surreal slice-of-life comedy.</p>
+      </section>
+
+      <section class="anime-section" id="made-in-abyss" data-genre="fantasy" onclick="highlightAnime(this)">
+        <h3>Made in Abyss</h3>
+        <p>A young girl and her robot friend descend into a mysterious, deadly abyss to find her mother in this beautiful yet disturbing fantasy adventure.</p>
+      </section>
+
+      <section class="anime-section" id="shield-hero" data-genre="fantasy" onclick="highlightAnime(this)">
+        <h3>Shield Hero</h3>
+        <p>Falsely accused and shunned, a hero must rise from disgrace to protect the world and earn redemption in this isekai tale of perseverance.</p>
+      </section>
+
+      <section class="anime-section" id="log-horizon" data-genre="fantasy" onclick="highlightAnime(this)">
+        <h3>Log Horizon</h3>
+        <p>Players trapped in an MMORPG must adapt to their new world and create a functioning society in this smart take on the "trapped in a game" genre.</p>
+      </section>
+
+      <section class="anime-section" id="fate-stay-night" data-genre="fantasy" onclick="highlightAnime(this)">
+        <h3>Fate Stay Night</h3>
+        <p>Mages summon heroic spirits from history to fight in a deadly war for the Holy Grail, featuring spectacular battles and deep lore.</p>
+      </section>
+
+      <section class="anime-section" id="dr-stone" data-genre="scifi" onclick="highlightAnime(this)">
+        <h3>Dr. Stone</h3>
+        <p>A science prodigy rebuilds civilization after humanity is mysteriously turned to stone for thousands of years, celebrating human ingenuity.</p>
+      </section>
+
+      <section class="anime-section" id="re-zero" data-genre="fantasy" onclick="highlightAnime(this)">
+        <h3>Re:Zero</h3>
+        <p>A boy gains the ability to rewind time upon death and must use it to protect those he loves in a cruel fantasy world that tests his resolve.</p>
+      </section>
+
+      <section class="anime-section" id="slime" data-genre="fantasy" onclick="highlightAnime(this)">
+        <h3>That Time I Got Reincarnated as a Slime</h3>
+        <p>After dying, a man is reincarnated as a powerful slime and builds a peaceful monster nation in this surprisingly wholesome isekai adventure.</p>
+      </section>
+
+      <section class="anime-section" id="no-game-no-life" data-genre="fantasy" onclick="highlightAnime(this)">
+        <h3>No Game No Life</h3>
+        <p>Genius siblings are transported to a world where games decide everything, including national borders, in this vibrant fantasy full of mind games.</p>
+      </section>
+
+      <section class="anime-section" id="sword-art-online" data-genre="scifi" onclick="highlightAnime(this)">
+        <h3>Sword Art Online</h3>
+        <p>Players trapped in a VR MMORPG must fight to survive, as dying in-game means dying in real life, exploring virtual reality's possibilities and dangers.</p>
+      </section>
+
+      <section class="anime-section" id="nana" data-genre="drama" onclick="highlightAnime(this)">
+        <h3>Nana</h3>
+        <p>Two women with the same name navigate music, love, and friendship in Tokyo in this mature drama about dreams and relationships.</p>
+      </section>
+
+      <section class="anime-section" id="honey-and-clover" data-genre="drama" onclick="highlightAnime(this)">
+        <h3>Honey and Clover</h3>
+        <p>Art school students explore love, dreams, and growing up in this heartfelt slice-of-life drama with beautiful emotional depth.</p>
+      </section>
+
+      <section class="anime-section" id="paradise-kiss" data-genre="drama" onclick="highlightAnime(this)">
+        <h3>Paradise Kiss</h3>
+        <p>A high school girl discovers the fashion world and herself through a group of eccentric designers in this stylish coming-of-age story.</p>
+      </section>
+
+      <section class="anime-section" id="kids-on-the-slope" data-genre="drama" onclick="highlightAnime(this)">
+        <h3>Kids on the Slope</h3>
+        <p>Two unlikely friends bond through jazz music in 1960s Japan and learn about friendship and passion in this beautifully animated music drama.</p>
+      </section>
+
+      <section class="anime-section" id="chihayafuru" data-genre="drama" onclick="highlightAnime(this)">
+        <h3>Chihayafuru</h3>
+        <p>A girl aspires to be the queen of karuta, a traditional card game, while building a competitive team in this surprisingly intense sports anime.</p>
+      </section>
+
+      <section class="anime-section" id="code-geass" data-genre="scifi" onclick="highlightAnime(this)">
+        <h3>Code Geass</h3>
+        <p>A genius gains the power to control anyone and leads a rebellion against a tyrannical empire in this mecha series full of strategic battles.</p>
+      </section>
+
+      <section class="anime-section" id="mobile-suit-gundam" data-genre="scifi" onclick="highlightAnime(this)">
+        <h3>Mobile Suit Gundam</h3>
+        <p>In a future torn by war, giant robot battles decide the fate of space colonies and humanity in the franchise that defined the mecha genre.</p>
+      </section>
+
+      <section class="anime-section" id="gurren-lagann" data-genre="scifi" onclick="highlightAnime(this)">
+        <h3>Gurren Lagann</h3>
+        <p>Two boys rise from underground to battle oppressive forces using a drill-powered mecha and pure spirit in this over-the-top mecha adventure.</p>
+      </section>
+
+      <section class="anime-section" id="evangelion" data-genre="scifi" onclick="highlightAnime(this)">
+        <h3>Evangelion</h3>
+        <p>Shinji pilots a bio-mechanical giant to protect Earth while unraveling deep emotional and philosophical trauma in this genre-defining classic.</p>
+      </section>
+
+      <section class="anime-section" id="86" data-genre="scifi" onclick="highlightAnime(this)">
+        <h3>86</h3>
+        <p>In a dystopian war-torn future, the "86" fight for a country that denies their existence, striving for dignity and freedom against mechanical legions.</p>
+      </section>
+    </div>
+  </main>
+  
+  <footer>
+    <p>&copy; 2023 AnimeRec. All rights reserved.</p>
+    <div class="social-links">
+      <a href="#"><i class="fab fa-twitter"></i></a>
+      <a href="#"><i class="fab fa-facebook"></i></a>
+      <a href="#"><i class="fab fa-instagram"></i></a>
+      <a href="#"><i class="fab fa-discord"></i></a>
+    </div>
+  </footer>
+  
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Highlight anime section when clicked
+    function highlightAnime(element) {
+      document.querySelectorAll('.anime-section').forEach(section => {
+        section.classList.remove('highlighted');
+      });
+      
+      element.classList.add('highlighted');
+      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      history.pushState(null, null, `#${element.id}`);
+    }
+
+    // Search functionality
+    function searchAnime() {
+      const input = document.getElementById('searchInput');
+      const filter = input.value.toLowerCase();
+      const sections = document.querySelectorAll('.anime-section');
+      
+      document.querySelectorAll('.search-highlight').forEach(highlight => {
+        const parent = highlight.parentNode;
+        parent.replaceChild(document.createTextNode(highlight.textContent), highlight);
+        parent.normalize();
+      });
+      
+      sections.forEach(section => {
+        const title = section.querySelector('h3').textContent.toLowerCase();
+        const description = section.querySelector('p').textContent.toLowerCase();
+        const titleElement = section.querySelector('h3');
+        const descElement = section.querySelector('p');
+        
+        if (filter === '' || (section.style.display !== 'none' && (title.includes(filter) || description.includes(filter)))) {
+          section.style.display = 'block';
+          
+          if (title.includes(filter)) {
+            const regex = new RegExp(filter, 'gi');
+            const newText = titleElement.textContent.replace(regex, match => 
+              `<span class="search-highlight">${match}</span>`
+            );
+            titleElement.innerHTML = newText;
+          }
+          
+          if (description.includes(filter)) {
+            const regex = new RegExp(filter, 'gi');
+            const newText = descElement.textContent.replace(regex, match => 
+              `<span class="search-highlight">${match}</span>`
+            );
+            descElement.innerHTML = newText;
+          }
+        } else {
+          section.style.display = 'none';
+        }
+      });
+    }
+    
+    // Genre filter functionality
+    function filterGenre(genre) {
+      const sections = document.querySelectorAll('.anime-section');
+      const buttons = document.querySelectorAll('.genre-btn');
+      
+      buttons.forEach(btn => {
+        if (btn.textContent.toLowerCase() === genre || (genre === 'all' && btn.textContent.toLowerCase() === 'all')) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+      
+      sections.forEach(section => {
+        if (genre === 'all' || section.getAttribute('data-genre') === genre) {
+          section.style.display = 'block';
+        } else {
+          section.style.display = 'none';
+        }
+      });
+      
+      document.getElementById('searchInput').value = '';
+      document.querySelectorAll('.search-highlight').forEach(highlight => {
+        const parent = highlight.parentNode;
+        parent.replaceChild(document.createTextNode(highlight.textContent), highlight);
+        parent.normalize();
+      });
+    }
+    
+    // Close mobile menu when clicking a link
+    function closeMobileMenu() {
+      const navbarCollapse = document.querySelector('.navbar-collapse');
+      const navbarToggler = document.querySelector('.navbar-toggler');
+      if (window.innerWidth <= 768) {
+        navbarCollapse.classList.remove('show');
+        navbarToggler.setAttribute('aria-expanded', 'false');
+      }
+    }
+    
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      filterGenre('all');
+      
+      if (window.location.hash) {
+        const targetSection = document.querySelector(window.location.hash);
+        if (targetSection) {
+          highlightAnime(targetSection);
+        }
+      }
+      
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', closeMobileMenu);
+      });
+      
+      document.getElementById('searchInput').addEventListener('input', searchAnime);
+      
+      // Add click event to search button
+      document.querySelector('.search-box button').addEventListener('click', searchAnime);
+    });
+  </script>
+</body>
+</html>

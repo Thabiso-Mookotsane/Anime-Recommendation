@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AnimeGenres - AnimeRec</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #ff4c4c;
+      --dark-bg: #121212;
+      --card-bg: #1f1f1f;
+      --text-light: #ffffff;
+      --text-muted: #cccccc;
+    }
+    
+    body {
+      background-color: var(--dark-bg);
+      color: var(--text-light);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding-top: 70px; /* Account for fixed navbar */
+    }
+    
+    .navbar-custom {
+      background-color: var(--card-bg);
+      border-bottom: 2px solid var(--primary-color);
+    }
+    
+    .navbar-custom .navbar-brand,
+    .navbar-custom .nav-link {
+      color: var(--text-light);
+    }
+    
+    .navbar-custom .nav-link:hover {
+      color: var(--primary-color);
+    }
+    
+    .navbar-custom .nav-link.active {
+      color: var(--primary-color);
+      font-weight: bold;
+    }
+    
+    .logo img {
+      max-height: 50px;
+      transition: transform 0.3s;
+    }
+    
+    .logo img:hover {
+      transform: scale(1.1);
+    }
+    
+    .search-box {
+      max-width: 300px;
+    }
+    
+    .search-box input {
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: var(--text-light);
+    }
+    
+    .search-box input:focus {
+      background-color: rgba(255, 255, 255, 0.15);
+      border-color: var(--primary-color);
+      color: var(--text-light);
+      box-shadow: 0 0 0 0.25rem rgba(255, 76, 76, 0.25);
+    }
+    
+    .section-title {
+      color: var(--primary-color);
+      margin-bottom: 30px;
+      position: relative;
+      padding-bottom: 10px;
+      text-align: center;
+    }
+    
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 3px;
+      background-color: var(--primary-color);
+    }
+    
+    .anime-card {
+      background-color: var(--card-bg);
+      border-radius: 10px;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+      height: 100%;
+      border-left: 4px solid var(--primary-color);
+    }
+    
+    .anime-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 10px 20px rgba(255, 76, 76, 0.2);
+    }
+    
+    .anime-card img {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+      border-bottom: 2px solid var(--primary-color);
+    }
+    
+    .anime-card h4 {
+      padding: 15px;
+      margin: 0;
+      font-size: 1.1rem;
+      text-align: center;
+      color: var(--text-light);
+    }
+    
+    .genre-nav {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 30px;
+      position: sticky;
+      top: 70px;
+      background-color: var(--dark-bg);
+      padding: 15px 0;
+      z-index: 10;
+    }
+    
+    .genre-link {
+      background-color: rgba(255, 76, 76, 0.2);
+      color: var(--text-light);
+      padding: 8px 15px;
+      border-radius: 20px;
+      text-decoration: none;
+      transition: all 0.3s;
+      white-space: nowrap;
+    }
+    
+    .genre-link:hover, 
+    .genre-link.active {
+      background-color: var(--primary-color);
+      color: white;
+    }
+    
+    footer {
+      background-color: var(--card-bg);
+      color: var(--text-muted);
+      text-align: center;
+      padding: 30px 0;
+      margin-top: 50px;
+      border-top: 2px solid var(--primary-color);
+    }
+    
+    .social-links a {
+      color: var(--text-muted);
+      margin: 0 10px;
+      font-size: 1.2rem;
+      transition: color 0.3s;
+    }
+    
+    .social-links a:hover {
+      color: var(--primary-color);
+    }
+    
+    /* Mobile Navigation Fixes */
+    .navbar-toggler {
+      border-color: rgba(255, 255, 255, 0.1);
+      color: var(--text-light);
+    }
+    
+    .navbar-toggler-icon {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.75%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+    
+    .navbar-collapse {
+      background-color: var(--card-bg);
+      padding: 15px;
+      border-radius: 5px;
+      margin-top: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    @media (max-width: 768px) {
+      .anime-card img {
+        height: 200px;
+      }
+      
+      .search-box {
+        max-width: 100%;
+        margin-top: 15px;
+      }
+      
+      .genre-nav {
+        top: 70px;
+      }
+      
+      .navbar-nav {
+        margin-bottom: 15px;
+      }
+      
+      .nav-item {
+        margin-bottom: 5px;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      body {
+        padding-top: 60px;
+      }
+      
+      .anime-card img {
+        height: 150px;
+      }
+      
+      .anime-card h4 {
+        font-size: 0.9rem;
+      }
+      
+      .genre-nav {
+        top: 60px;
+        justify-content: flex-start;
+        padding: 10px;
+        overflow-x: auto;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+      }
+      
+      .genre-link {
+        display: inline-block;
+        margin-bottom: 5px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
+    <div class="container">
+      <a class="navbar-brand logo" href="index.html">
+        <img src="images/icon.jpg" alt="AnimeRec Logo">
+        <span class="d-inline-block align-middle ms-2">AnimeRec</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link active" href="genre.html">Genre</a></li>
+          <li class="nav-item"><a class="nav-link" href="description.html">Description</a></li>
+          <li class="nav-item"><a class="nav-link" href="about.html">About Us</a></li>
+          <li class="nav-item"><a class="nav-link" href="feedback.html">Feedback</a></li>
+        </ul>
+        <div class="d-flex search-box">
+          <input class="form-control me-2" type="search" placeholder="Search anime..." id="searchInput">
+          <button class="btn btn-outline-light" type="button"><i class="fas fa-search"></i></button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container py-5">
+    <h2 class="section-title">Explore Anime by Genre</h2>
+    
+    <div class="genre-nav">
+      <a href="#action" class="genre-link">Action</a>
+      <a href="#romance" class="genre-link">Romance</a>
+      <a href="#horror" class="genre-link">Horror</a>
+      <a href="#scifi" class="genre-link">Sci-Fi</a>
+      <a href="#comedy" class="genre-link">Comedy</a>
+      <a href="#adventure" class="genre-link">Adventure</a>
+      <a href="#isekai" class="genre-link">Isekai</a>
+      <a href="#josei" class="genre-link">Josei</a>
+      <a href="#mecha" class="genre-link">Mecha</a>
+    </div>
+
+    <!-- Action Section -->
+    <section id="action" class="mb-5">
+      <h3 class="text-primary mb-4" style="border-left: 5px solid var(--primary-color); padding-left: 15px;">Action</h3>
+      <div class="row">
+        <div class="col-md-2 col-6 mb-4">
+          <div class="anime-card">
+            <a href="description.html#attack-on-titan">
+              <img src="images/attack_on_titan.jpg" alt="Attack on Titan">
+              <h4>Attack on Titan</h4>
+            </a>
+          </div>
+        </div>
+        <div class="col-md-2 col-6 mb-4">
+          <div class="anime-card">
+            <a href="description.html#demon-slayer">
+              <img src="images/demon_slayer.jpg" alt="Demon Slayer">
+              <h4>Demon Slayer</h4>
+            </a>
+          </div>
+        </div>
+        <div class="col-md-2 col-6 mb-4">
+          <div class="anime-card">
+            <a href="description.html#one-piece">
+              <img src="images/one_piece.jpg" alt="One Piece">
+              <h4>One Piece</h4>
+            </a>
+          </div>
+        </div>
+        <div class="col-md-2 col-6 mb-4">
+          <div class="anime-card">
+            <a href="description.html#jujutsu-kaisen">
+              <img src="images/jujutsu_kaisen.jpg" alt="Jujutsu Kaisen">
+              <h4>Jujutsu Kaisen</h4>
+            </a>
+          </div>
+        </div>
+        <div class="col-md-2 col-6 mb-4">
+          <div class="anime-card">
+            <a href="description.html#black-clover">
+              <img src="images/black_clover.jpg" alt="Black Clover">
+              <h4>Black Clover</h4>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Romance Section -->
+    <section id="romance" class="mb-5">
+      <h3 class="text-primary mb-4" style="border-left: 5px solid var(--primary-color); padding-left: 15px;">Romance</h3>
+      <div class="row">
+        <div class="col-md-2 col-6 mb-4">
+          <div class="anime-card">
+            <a href="description.html#your-name">
+              <img src="images/your_name.jpg" alt="Your Name">
+              <h4>Your Name</h4>
+            </a>
+          </div>
+        </div>
+        <div class="col-md-2 col-6 mb-4">
+          <div class="anime-card">
+            <a href="description.html#clannad">
+              <img src="images/clannad.jpg" alt="Clannad">
+              <h4>Clannad</h4>
+            </a>
+          </div>
+        </div>
+        <div class="col-md-2 col-6 mb-4">
+          <div class="anime-card">
+            <a href="description.html#toradora">
+              <img src="images/toradora.jpg" alt="Toradora!">
+              <h4>Toradora!</h4>
+            </a>
+          </div>
+        </div>
+        <div class="col-md-2 col-6 mb-4">
+          <div class="anime-card">
+            <a href="description.html#fruits-basket">
+              <img src="images/fruits_basket.jpg" alt="Fruits Basket">
+              <h4>Fruits Basket</h4>
+            </a>
+          </div>
+        </div>
+        <div class="col-md-2 col-6 mb-4">
+          <div class="anime-card">
+            <a href="description.html#your-lie-in-april">
+              <img src="images/your_lie_in_april.jpg" alt="Your Lie in April">
+              <h4>Your Lie in April</h4>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Horror Section -->
+    <section id="horror" class="mb-5">
+      <h3 class="text-primary mb-4" style="border-left: 5px solid var(--primary-color); padding-left: 15px;">Horror</h3>
+      <div class="row">
+        <div class="col-md-2 col-6 mb-4">
+          <div class="anime-card">
+            <a href="description.html#tokyo-ghoul">
+              <img src="images/tokyo_ghoul.jpg" alt="Tokyo Ghoul">
+              <h4>Tokyo Ghoul</h4>
+            </a>
+          </div>
+        </div>
+        <div class="col-md-2 col-6 mb-4">
+          <div class="anime-card">
+            <a href="description.html#another">
+              <img src="images/another.jpg" alt="Another">
+              <h4>Another</h4>
+            </a>
+          </div>
+        </div>
+        <div class="col-md-2 col-6 mb-4">
+          <div class="anime-card">
+            <a href="description.html#elfen-lied">
+              <img src="images/elfen_lied.jpg" alt="Elfen Lied">
+              <h4>Elfen Lied</h4>
+            </a>
+          </div>
+        </div>
+        <div class="col-md-2 col-6 mb-4">
+          <div class="anime-card">
+            <a href="description.html#higurashi">
+              <img src="images/higurashi.jpg" alt="Higurashi">
+              <h4>Higurashi</h4>
+            </a>
+          </div>
+        </div>
+        <div class="col-md-2 col-6 mb-4">
+          <div class="anime-card">
+            <a href="description.html#parasyte">
+              <img src="images/parasyte.jpg" alt="Parasyte">
+              <h4>Parasyte</h4>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sci-Fi Section -->
+    <section id="scifi" class="mb-5">
+      <h3 class="text-primary mb-4" style="border-left: 5px solid var(--primary-color); padding-left: 15px;">Sci-Fi</h3>
+      <div class="row">
+        <div class="col-md-2 col-6 mb-4">
+          <div class="anime-card">
+            <a href="description.html#steins-gate">
+              <img src="images/steins_gate.jpg" alt="Steins;Gate">
+              <h4>Steins;Gate</h4>
+            </a>
+          </div>
+        </div>
+        <div class="col-md-2 col-6 mb-4">
+          <div class="anime-card">
+            <a href="description.html#cowboy-bebop">
+              <img src="images/cowboy_bebop.jpg" alt="Cowboy Bebop">
+              <h4>Cowboy Bebop</h4>
+            </a>
+          </div>
+        </div>
+        <div class="col-md-2 col-6 mb-4">
+          <div class="anime-card">
+            <a href="description.html#psycho-pass">
+              <img src="images/psycho_pass.jpg" alt="Psycho-Pass">
+              <h4>Psycho-Pass</h4>
+            </a>
+          </div>
+        </div>
+        <div class="col-md-2 col-6 mb-4">
+          <div class="anime-card">
+            <a href="description.html#neon-genesis-evangelion">
+              <img src="images/neon_genesis_evangelion.jpg" alt="Neon Genesis Evangelion">
+              <h4>Evangelion</h4>
+            </a>
+          </div>
+        </div>
+        <div class="col-md-2 col-6 mb-4">
+          <div class="anime-card">
+            <a href="description.html#ergo-proxy">
+              <img src="images/ergo_proxy.jpg" alt="Ergo Proxy">
+              <h4>Ergo Proxy</h4>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Comedy Section -->
+    <section id="comedy" class="mb-5">
+      <h3 class="text-primary mb-4" style="border-left: 5px solid var(--primary-color); padding-left: 15px;">Comedy</h3>
+      <div class="row">
+        <div class="col-md-2 col-6 mb-4">
+          <div class="anime-card">
+            <a href="description.html#konosuba">
+              <img src="images/konosuba.jpg" alt="Konosuba">
+              <h4>Konosuba</h4>
+            </a>
+          </div>
+        </div>
+        <div class="col-md-2 col-6 mb-4">
+          <div class="anime-card">
+            <a href="description.html#one-punch-man">
+              <img src="images/one_punch_man.jpg" alt="One Punch Man">
+              <h4>One Punch Man</h4>
+            </a>
+          </div>
+        </div>
+        <div class="col-md-2 col-6 mb-4">
+          <div class="anime-card">
+            <a href="description.html#gintama">
+              <img src="images/gintama.jpg" alt="Gintama">
+              <h4>Gintama</h4>
+            </a>
+          </div>
+        </div>
+        <div class="col-md-2 col-6 mb-4">
+          <div class="anime-card">
+            <a href="description.html#saiki-k">
+              <img src="images/saiki_k.jpg" alt="Saiki K">
+              <h4>Saiki K</h4>
+            </a>
+          </div>
+        </div>
+        <div class="col-md-2 col-6 mb-4">
+          <div class="anime-card">
+            <a href="description.html#nichijou">
+              <img src="images/nichijou.jpg" alt="Nichijou">
+              <h4>Nichijou</h4>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Adventure Section -->
+    <section id="adventure" class="mb-5">
+      <h3 class="text-primary mb-4" style="border-left: 5px solid var(--primary-color); padding-left: 15px;">Adventure</h3>
+      <div class="row">
+        <div class="col-md-2 col-6 mb-4">
+          <div class="anime-card">
+            <a href="description.html#made-in-abyss">
+              <img src="images/made_in_abyss.jpg" alt="Made in Abyss">
+              <h4>Made in Abyss</h4>
+            </a>
+          </div>
+        </div>
+        <div class="col-md-2 col-6 mb-4">
+          <div class="anime-card">
+            <a href="description.html#rising-of-the-shield-hero">
+              <img src="images/shield_hero.jpg" alt="Shield Hero">
+              <h4>Shield Hero</h4>
+            </a>
+          </div>
+        </div>
+        <div class="col-md-2 col-6 mb-4">
+          <div class="anime-card">
+            <a href="description.html#log-horizon">
+              <img src="images/log_horizon.jpg" alt="Log Horizon">
+              <h4>Log Horizon</h4>
+            </a>
+          </div>
+        </div>
+        <div class="col-md-2 col-6 mb-4">
+          <div class="anime-card">
+            <a href="description.html#fate-stay-night">
+              <img src="images/fate_stay_night.jpg" alt="Fate Stay Night">
+              <h4>Fate Stay Night</h4>
+            </a>
+          </div>
+        </div>
+        <div class="col-md-2 col-6 mb-4">
+          <div class="anime-card">
+            <a href="description.html#dr-stone">
+              <img src="images/dr_stone.jpg" alt="Dr. Stone">
+              <h4>Dr. Stone</h4>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Isekai Section -->
+    <section id="isekai" class="mb-5">
+      <h3 class="text-primary mb-4" style="border-left: 5px solid var(--primary-color); padding-left: 15px;">Isekai</h3>
+      <div class="row">
+        <div class="col-md-2 col-6 mb-4">
+          <div class="anime-card">
+            <a href="description.html#re-zero">
+              <img src="images/re_zero.jpg" alt="Re:Zero">
+              <h4>Re:Zero</h4>
+            </a>
+          </div>
+        </div>
+        <div class="col-md-2 col-6 mb-4">
+          <div class="anime-card">
+            <a href="description.html#slime">
+              <img src="images/slime.jpg" alt="Slime">
+              <h4>That Time I Got Reincarnated as a Slime</h4>
+            </a>
+          </div>
+        </div>
+        <div class="col-md-2 col-6 mb-4">
+          <div class="anime-card">
+            <a href="description.html#no-game-no-life">
+              <img src="images/no_game_no_life.jpg" alt="No Game No Life">
+              <h4>No Game No Life</h4>
+            </a>
+          </div>
+        </div>
+        <div class="col-md-2 col-6 mb-4">
+          <div class="anime-card">
+            <a href="description.html#shield-hero">
+              <img src="images/shield_hero.jpg" alt="Shield Hero">
+              <h4>Shield Hero</h4>
+            </a>
+          </div>
+        </div>
+        <div class="col-md-2 col-6 mb-4">
+          <div class="anime-card">
+            <a href="description.html#sao">
+              <img src="images/sao.jpg" alt="Sword Art Online">
+              <h4>Sword Art Online</h4>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Josei Section -->
+    <section id="josei" class="mb-5">
+      <h3 class="text-primary mb-4" style="border-left: 5px solid var(--primary-color); padding-left: 15px;">Josei</h3>
+      <div class="row">
+        <div class="col-md-2 col-6 mb-4">
+          <div class="anime-card">
+            <a href="description.html#nana">
+              <img src="images/nana.jpg" alt="Nana">
+              <h4>Nana</h4>
+            </a>
+          </div>
+        </div>
+        <div class="col-md-2 col-6 mb-4">
+          <div class="anime-card">
+            <a href="description.html#honey-and-clover">
+              <img src="images/honey_and_clover.jpg" alt="Honey and Clover">
+              <h4>Honey and Clover</h4>
+            </a>
+          </div>
+        </div>
+        <div class="col-md-2 col-6 mb-4">
+          <div class="anime-card">
+            <a href="description.html#paradise-kiss">
+              <img src="images/paradise_kiss.jpg" alt="Paradise Kiss">
+              <h4>Paradise Kiss</h4>
+            </a>
+          </div>
+        </div>
+        <div class="col-md-2 col-6 mb-4">
+          <div class="anime-card">
+            <a href="description.html#kids-on-the-slope">
+              <img src="images/kids_on_the_slope.jpg" alt="Kids on the Slope">
+              <h4>Kids on the Slope</h4>
+            </a>
+          </div>
+        </div>
+        <div class="col-md-2 col-6 mb-4">
+          <div class="anime-card">
+            <a href="description.html#chihayafuru">
+              <img src="images/chihayafuru.jpg" alt="Chihayafuru">
+              <h4>Chihayafuru</h4>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Mecha Section -->
+    <section id="mecha" class="mb-5">
+      <h3 class="text-primary mb-4" style="border-left: 5px solid var(--primary-color); padding-left: 15px;">Mecha</h3>
+      <div class="row">
+        <div class="col-md-2 col-6 mb-4">
+          <div class="anime-card">
+            <a href="description.html#code-geass">
+              <img src="images/code_geass.jpg" alt="Code Geass">
+              <h4>Code Geass</h4>
+            </a>
+          </div>
+        </div>
+        <div class="col-md-2 col-6 mb-4">
+          <div class="anime-card">
+            <a href="description.html#gundam">
+              <img src="images/gundam.jpg" alt="Gundam">
+              <h4>Mobile Suit Gundam</h4>
+            </a>
+          </div>
+        </div>
+        <div class="col-md-2 col-6 mb-4">
+          <div class="anime-card">
+            <a href="description.html#gurren-lagann">
+              <img src="images/gurren_lagann.jpg" alt="Gurren Lagann">
+              <h4>Gurren Lagann</h4>
+            </a>
+          </div>
+        </div>
+        <div class="col-md-2 col-6 mb-4">
+          <div class="anime-card">
+            <a href="description.html#evangelion">
+              <img src="images/neon_genesis_evangelion.jpg" alt="Evangelion">
+              <h4>Evangelion</h4>
+            </a>
+          </div>
+        </div>
+        <div class="col-md-2 col-6 mb-4">
+          <div class="anime-card">
+            <a href="description.html#86">
+              <img src="images/86.jpg" alt="86">
+              <h4>86</h4>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 AnimeRec. All rights reserved.</p>
+    <div class="social-links">
+      <a href="#"><i class="fab fa-twitter"></i></a>
+      <a href="#"><i class="fab fa-facebook"></i></a>
+      <a href="#"><i class="fab fa-instagram"></i></a>
+      <a href="#"><i class="fab fa-discord"></i></a>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+    // Highlight active genre link when scrolling
+    document.addEventListener('DOMContentLoaded', function() {
+      const genreLinks = document.querySelectorAll('.genre-link');
+      const genreSections = document.querySelectorAll('section[id]');
+      
+      // Set initial active link based on URL hash
+      if (window.location.hash) {
+        genreLinks.forEach(link => {
+          link.classList.remove('active');
+          if (link.getAttribute('href') === window.location.hash) {
+            link.classList.add('active');
+          }
+        });
+      }
+      
+      window.addEventListener('scroll', function() {
+        let current = '';
+        
+        genreSections.forEach(section => {
+          const sectionTop = section.offsetTop;
+          const sectionHeight = section.clientHeight;
+          
+          if (window.scrollY >= (sectionTop - 150)) {
+            current = section.getAttribute('id');
+          }
+        });
+        
+        genreLinks.forEach(link => {
+          link.classList.remove('active');
+          if (link.getAttribute('href') === `#${current}`) {
+            link.classList.add('active');
+          }
+        });
+      });
+      
+      // Smooth scrolling for genre links
+      genreLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          const targetId = this.getAttribute('href');
+          const targetSection = document.querySelector(targetId);
+          
+          if (targetSection) {
+            window.scrollTo({
+              top: targetSection.offsetTop - 80,
+              behavior: 'smooth'
+            });
+            
+            // Update URL hash without jumping
+            history.pushState(null, null, targetId);
+          }
+        });
+      });
+      
+      // Close mobile menu when clicking a link
+      const navLinks = document.querySelectorAll('.nav-link');
+      const navbarToggler = document.querySelector('.navbar-toggler');
+      const navbarCollapse = document.querySelector('.navbar-collapse');
+      
+      navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          if (window.innerWidth <= 768) {
+            navbarCollapse.classList.remove('show');
+            navbarToggler.setAttribute('aria-expanded', 'false');
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AnimeRec - Your Anime Recommendation Hub</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #ff4c4c;
+      --dark-bg: #121212;
+      --card-bg: #1f1f1f;
+      --text-light: #ffffff;
+      --text-muted: #cccccc;
+    }
+    
+    body {
+      background-color: var(--dark-bg);
+      color: var(--text-light);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding-top: 70px;
+    }
+    
+    .navbar-custom {
+      background-color: var(--card-bg);
+      border-bottom: 2px solid var(--primary-color);
+    }
+    
+    .navbar-custom .navbar-brand,
+    .navbar-custom .nav-link {
+      color: var(--text-light);
+    }
+    
+    .navbar-custom .nav-link:hover {
+      color: var(--primary-color);
+    }
+    
+    .navbar-custom .nav-link.active {
+      color: var(--primary-color);
+      font-weight: bold;
+    }
+    
+    .logo img {
+      max-height: 50px;
+      transition: transform 0.3s;
+    }
+    
+    .logo img:hover {
+      transform: scale(1.1);
+    }
+    
+    .search-box {
+      max-width: 300px;
+    }
+    
+    .search-box input {
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: var(--text-light);
+    }
+    
+    .search-box input:focus {
+      background-color: rgba(255, 255, 255, 0.15);
+      border-color: var(--primary-color);
+      color: var(--text-light);
+      box-shadow: 0 0 0 0.25rem rgba(255, 76, 76, 0.25);
+    }
+    
+    /* Custom navbar toggler */
+    .navbar-toggler {
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 0.25rem 0.5rem;
+    }
+    
+    .navbar-toggler-icon {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.8%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+      width: 1.25em;
+      height: 1.25em;
+    }
+    
+    /* Mobile-specific styles */
+    @media (max-width: 991.98px) {
+      .navbar-collapse {
+        background-color: var(--card-bg);
+        padding: 15px;
+        margin-top: 10px;
+        border-radius: 5px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      
+      .search-box {
+        max-width: 100%;
+        margin-top: 10px;
+      }
+      
+      .navbar-nav {
+        margin-bottom: 10px;
+      }
+    }
+    
+    /* Rest of your existing styles... */
+    .section-title {
+      color: var(--primary-color);
+      margin-bottom: 30px;
+      position: relative;
+      padding-bottom: 10px;
+      text-align: center;
+    }
+    
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 3px;
+      background-color: var(--primary-color);
+    }
+    
+    .anime-card {
+      background-color: var(--card-bg);
+      border-radius: 10px;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+      height: 100%;
+      border-left: 4px solid var(--primary-color);
+    }
+    
+    .anime-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 10px 20px rgba(255, 76, 76, 0.2);
+    }
+    
+    .anime-card img {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+      border-bottom: 2px solid var(--primary-color);
+    }
+    
+    .anime-card-body {
+      padding: 15px;
+    }
+    
+    .anime-card h3 {
+      color: var(--text-light);
+      font-size: 1.1rem;
+      margin-bottom: 5px;
+    }
+    
+    .anime-card p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 0;
+    }
+    
+    .carousel-control-prev, 
+    .carousel-control-next {
+      width: 5%;
+    }
+    
+    .carousel-indicators button {
+      background-color: var(--primary-color);
+    }
+    
+    .anime-of-the-day {
+      background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('images/anime-bg.jpg');
+      background-size: cover;
+      background-position: center;
+      padding: 80px 0;
+      color: white;
+      margin-bottom: 50px;
+    }
+    
+    .aotd-card {
+      background-color: rgba(31, 31, 31, 0.8);
+      border-radius: 10px;
+      padding: 20px;
+      max-width: 800px;
+      margin: 0 auto;
+      border-left: 4px solid var(--primary-color);
+    }
+    
+    /* Improved Footer Styles */
+    footer {
+      background-color: var(--card-bg);
+      color: var(--text-muted);
+      padding: 40px 0 20px;
+      border-top: 2px solid var(--primary-color);
+      margin-top: 50px;
+    }
+    
+    footer h5 {
+      color: var(--text-light);
+      margin-bottom: 20px;
+      font-size: 1.1rem;
+    }
+    
+    footer ul li {
+      margin-bottom: 10px;
+    }
+    
+    footer a {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    
+    footer a:hover {
+      color: var(--primary-color);
+    }
+    
+    .social-links a {
+      display: inline-block;
+      width: 36px;
+      height: 36px;
+      line-height: 36px;
+      text-align: center;
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      margin: 0 5px;
+      transition: all 0.3s;
+    }
+    
+    .social-links a:hover {
+      background-color: var(--primary-color);
+      color: white !important;
+      transform: translateY(-3px);
+    }
+    
+    .search-highlight {
+      background-color: rgba(255, 76, 76, 0.5);
+      color: white;
+      font-weight: bold;
+      padding: 0 2px;
+      border-radius: 3px;
+    }
+    
+    .no-results {
+      text-align: center;
+      padding: 50px;
+      display: none;
+    }
+    
+    /* Highlight animation for description page */
+    .anime-highlight {
+      animation: highlightFade 3s ease-out;
+      border-left: 4px solid var(--primary-color);
+      padding-left: 15px;
+    }
+    
+    @keyframes highlightFade {
+      0% { background-color: rgba(255, 76, 76, 0.3); }
+      100% { background-color: transparent; }
+    }
+    
+    @media (max-width: 768px) {
+      .anime-card img {
+        height: 200px;
+      }
+      
+      .aotd-card {
+        padding: 15px;
+      }
+      
+      .search-box {
+        max-width: 200px;
+      }
+      
+      footer {
+        text-align: center;
+      }
+      
+      .social-links {
+        justify-content: center !important;
+        margin-bottom: 20px;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .anime-card img {
+        height: 150px;
+      }
+      
+      body {
+        padding-top: 60px;
+      }
+      
+      footer .col-md-4 {
+        margin-bottom: 30px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
+    <div class="container">
+      <a class="navbar-brand logo" href="index.html">
+        <img src="images/icon.jpg" alt="AnimeRec Logo">
+        <span class="d-inline-block align-middle ms-2">AnimeRec</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link active" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="genre.html">Genre</a></li>
+          <li class="nav-item"><a class="nav-link" href="description.html">Description</a></li>
+          <li class="nav-item"><a class="nav-link" href="about.html">About Us</a></li>
+          <li class="nav-item"><a class="nav-link" href="feedback.html">Feedback</a></li>
+        </ul>
+        <div class="d-flex search-box">
+          <input class="form-control me-2" type="search" placeholder="Search anime..." id="searchInput" onkeyup="searchAnime()">
+          <button class="btn btn-outline-light" type="button"><i class="fas fa-search"></i></button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Rest of your HTML content remains the same... -->
+  <!-- No Results Message -->
+  <div id="noResults" class="no-results">
+    <h3>No anime found matching your search</h3>
+    <p>Try different keywords or check out our recommendations below</p>
+  </div>
+
+  <!-- Anime of the Day -->
+  <section class="anime-of-the-day text-center">
+    <div class="container">
+      <div class="aotd-card">
+        <h2 class="mb-4">Anime of the Day</h2>
+        <div id="animeOfTheDay" class="carousel slide" data-bs-ride="carousel">
+          <div class="carousel-inner">
+            <div class="carousel-item active">
+              <div class="row align-items-center">
+                <div class="col-md-4">
+                  <img src="images/demon_slayer.jpg" class="d-block w-100 rounded" alt="Demon Slayer">
+                </div>
+                <div class="col-md-8 text-start">
+                  <h3>Demon Slayer: Kimetsu no Yaiba</h3>
+                  <p class="mb-3">After his family is brutally murdered and his sister turned into a demon, Tanjiro Kamado becomes a demon slayer to avenge his family and cure his sister.</p>
+                  <p><strong>Rating:</strong> 8.7/10</p>
+                  <p><strong>Genre:</strong> Action, Fantasy, Supernatural</p>
+                  <a href="description.html?anime=demon-slayer" class="btn btn-danger mt-3">View Details</a>
+                </div>
+              </div>
+            </div>
+            <div class="carousel-item">
+              <div class="row align-items-center">
+                <div class="col-md-4">
+                  <img src="images/jujutsu_kaisen.jpg" class="d-block w-100 rounded" alt="Jujutsu Kaisen">
+                </div>
+                <div class="col-md-8 text-start">
+                  <h3>Jujutsu Kaisen</h3>
+                  <p class="mb-3">Yuuji Itadori swallows a cursed talisman and becomes host to a powerful curse. To save his friends, he joins the Tokyo Metropolitan Magic Technical College to become a Jujutsu Sorcerer.</p>
+                  <p><strong>Rating:</strong> 8.8/10</p>
+                  <p><strong>Genre:</strong> Action, Fantasy, Horror</p>
+                  <a href="description.html?anime=jujutsu-kaisen" class="btn btn-danger mt-3">View Details</a>
+                </div>
+              </div>
+            </div>
+            <div class="carousel-item">
+              <div class="row align-items-center">
+                <div class="col-md-4">
+                  <img src="images/attack_on_titan.jpg" class="d-block w-100 rounded" alt="Attack on Titan">
+                </div>
+                <div class="col-md-8 text-start">
+                  <h3>Attack on Titan</h3>
+                  <p class="mb-3">After his hometown is destroyed and his mother is killed, young Eren Jaeger vows to cleanse the earth of the giant humanoid Titans that have brought humanity to the brink of extinction.</p>
+                  <p><strong>Rating:</strong> 9.0/10</p>
+                  <p><strong>Genre:</strong> Action, Drama, Fantasy</p>
+                  <a href="description.html?anime=attack-on-titan" class="btn btn-danger mt-3">View Details</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#animeOfTheDay" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#animeOfTheDay" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Popular Anime -->
+  <section class="container py-5">
+    <h2 class="section-title">Popular Anime</h2>
+    <div id="popularAnime" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <div class="row">
+            <div class="col-md-3 col-6 mb-4">
+              <div class="anime-card">
+                <a href="description.html?anime=attack-on-titan" data-anime-id="attack-on-titan">
+                  <img src="images/attack_on_titan.jpg" alt="Attack on Titan">
+                  <div class="anime-card-body">
+                    <h3>Attack on Titan</h3>
+                    <p>Rating: 9.0</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+            <div class="col-md-3 col-6 mb-4">
+              <div class="anime-card">
+                <a href="description.html?anime=my-hero-academia" data-anime-id="my-hero-academia">
+                  <img src="images/my_hero_academia.jpg" alt="My Hero Academia">
+                  <div class="anime-card-body">
+                    <h3>My Hero Academia</h3>
+                    <p>Rating: 8.0</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+            <div class="col-md-3 col-6 mb-4">
+              <div class="anime-card">
+                <a href="description.html?anime=naruto" data-anime-id="naruto">
+                  <img src="images/naruto.jpg" alt="Naruto">
+                  <div class="anime-card-body">
+                    <h3>Naruto</h3>
+                    <p>Rating: 8.5</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+            <div class="col-md-3 col-6 mb-4">
+              <div class="anime-card">
+                <a href="description.html?anime=demon-slayer" data-anime-id="demon-slayer">
+                  <img src="images/demon_slayer.jpg" alt="Demon Slayer">
+                  <div class="anime-card-body">
+                    <h3>Demon Slayer</h3>
+                    <p>Rating: 8.7</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="row">
+            <div class="col-md-3 col-6 mb-4">
+              <div class="anime-card">
+                <a href="description.html?anime=one-piece" data-anime-id="one-piece">
+                  <img src="images/one_piece.jpg" alt="One Piece">
+                  <div class="anime-card-body">
+                    <h3>One Piece</h3>
+                    <p>Rating: 9.1</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+            <div class="col-md-3 col-6 mb-4">
+              <div class="anime-card">
+                <a href="description.html?anime=dragon-ball-z" data-anime-id="dragon-ball-z">
+                  <img src="images/dragon_ball_z.jpg" alt="Dragon Ball Z">
+                  <div class="anime-card-body">
+                    <h3>Dragon Ball Z</h3>
+                    <p>Rating: 8.6</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+            <div class="col-md-3 col-6 mb-4">
+              <div class="anime-card">
+                <a href="description.html?anime=jujutsu-kaisen" data-anime-id="jujutsu-kaisen">
+                  <img src="images/jujutsu_kaisen.jpg" alt="Jujutsu Kaisen">
+                  <div class="anime-card-body">
+                    <h3>Jujutsu Kaisen</h3>
+                    <p>Rating: 8.8</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+            <div class="col-md-3 col-6 mb-4">
+              <div class="anime-card">
+                <a href="description.html?anime=fma-brotherhood" data-anime-id="fma-brotherhood">
+                  <img src="images/fma_brotherhood.jpg" alt="Fullmetal Alchemist">
+                  <div class="anime-card-body">
+                    <h3>Fullmetal Alchemist</h3>
+                    <p>Rating: 9.2</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#popularAnime" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#popularAnime" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- Latest Releases -->
+  <section class="container py-5">
+    <h2 class="section-title">Latest Releases</h2>
+    <div id="latestReleases" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <div class="row">
+            <div class="col-md-3 col-6 mb-4">
+              <div class="anime-card">
+                <a href="description.html?anime=solo-leveling" data-anime-id="solo-leveling">
+                  <img src="images/solo_leveling.jpg" alt="Solo Leveling">
+                  <div class="anime-card-body">
+                    <h3>Solo Leveling</h3>
+                    <p>Rating: 8.8</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+            <div class="col-md-3 col-6 mb-4">
+              <div class="anime-card">
+                <a href="description.html?anime=jujutsu-kaisen-s2" data-anime-id="jujutsu-kaisen-s2">
+                  <img src="images/jujutsu_kaisen_s2.jpg" alt="Jujutsu Kaisen S2">
+                  <div class="anime-card-body">
+                    <h3>Jujutsu Kaisen S2</h3>
+                    <p>Rating: 8.9</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+            <div class="col-md-3 col-6 mb-4">
+              <div class="anime-card">
+                <a href="description.html?anime=aot-final" data-anime-id="aot-final">
+                  <img src="images/aot_final.jpg" alt="Attack on Titan Final">
+                  <div class="anime-card-body">
+                    <h3>AoT Final Season</h3>
+                    <p>Rating: 9.1</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+            <div class="col-md-3 col-6 mb-4">
+              <div class="anime-card">
+                <a href="description.html?anime=frieren" data-anime-id="frieren">
+                  <img src="images/frieren.jpg" alt="Frieren">
+                  <div class="anime-card-body">
+                    <h3>Frieren</h3>
+                    <p>Rating: 8.7</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="row">
+            <div class="col-md-3 col-6 mb-4">
+              <div class="anime-card">
+                <a href="description.html?anime=chainsaw-man" data-anime-id="chainsaw-man">
+                  <img src="images/chainsaw_man.jpg" alt="Chainsaw Man">
+                  <div class="anime-card-body">
+                    <h3>Chainsaw Man</h3>
+                    <p>Rating: 8.6</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+            <div class="col-md-3 col-6 mb-4">
+              <div class="anime-card">
+                <a href="description.html?anime=blue-lock" data-anime-id="blue-lock">
+                  <img src="images/blue_lock.jpg" alt="Blue Lock">
+                  <div class="anime-card-body">
+                    <h3>Blue Lock</h3>
+                    <p>Rating: 8.4</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+            <div class="col-md-3 col-6 mb-4">
+              <div class="anime-card">
+                <a href="description.html?anime=hells-paradise" data-anime-id="hells-paradise">
+                  <img src="images/hells_paradise.jpg" alt="Hell's Paradise">
+                  <div class="anime-card-body">
+                    <h3>Hell's Paradise</h3>
+                    <p>Rating: 8.3</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+            <div class="col-md-3 col-6 mb-4">
+              <div class="anime-card">
+                <a href="description.html?anime=spy-family-s2" data-anime-id="spy-family-s2">
+                  <img src="images/spy_family_s2.jpg" alt="Spy x Family S2">
+                  <div class="anime-card-body">
+                    <h3>Spy x Family S2</h3>
+                    <p>Rating: 8.8</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#latestReleases" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#latestReleases" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- Improved Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4 mb-4 mb-md-0">
+          <h5>Quick Links</h5>
+          <ul class="list-unstyled">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="genre.html">Genres</a></li>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="feedback.html">Feedback</a></li>
+          </ul>
+        </div>
+        <div class="col-md-4 mb-4 mb-md-0">
+          <h5>Connect With Us</h5>
+          <div class="social-links d-flex">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-discord"></i></a>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <h5>Newsletter</h5>
+          <form class="mt-3">
+            <div class="input-group mb-3">
+              <input type="email" class="form-control" placeholder="Your Email" aria-label="Your Email">
+              <button class="btn btn-danger" type="submit">Subscribe</button>
+            </div>
+            <small class="text-muted">Get the latest anime recommendations</small>
+          </form>
+        </div>
+      </div>
+      <hr class="my-4 bg-secondary">
+      <div class="text-center">
+        <p class="mb-0">&copy; 2025 AnimeRec. All rights reserved.</p>
+        <p class="mb-0 small">Made with <i class="fas fa-heart text-danger"></i> for anime fans</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+    // Enhanced Search functionality
+    function searchAnime() {
+      const input = document.getElementById('searchInput');
+      const filter = input.value.toLowerCase().trim();
+      const cards = document.querySelectorAll('.anime-card');
+      const noResults = document.getElementById('noResults');
+      
+      let hasResults = false;
+      let firstMatch = null;
+      
+      cards.forEach(card => {
+        const title = card.querySelector('h3');
+        const titleText = title.textContent.toLowerCase();
+        
+        if (filter === '' || titleText.includes(filter)) {
+          card.style.display = 'block';
+          hasResults = true;
+          
+          // Highlight matches
+          if (filter !== '') {
+            const regex = new RegExp(filter, 'gi');
+            title.innerHTML = title.textContent.replace(regex, 
+              match => `<span class="search-highlight">${match}</span>`);
+            
+            if (!firstMatch) firstMatch = card;
+          } else {
+            title.innerHTML = title.textContent;
+          }
+        } else {
+          card.style.display = 'none';
+        }
+      });
+      
+      noResults.style.display = hasResults ? 'none' : 'block';
+      
+      if (firstMatch) {
+        firstMatch.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      
+      // Pause carousels during search
+      const carousels = ['animeOfTheDay', 'popularAnime', 'latestReleases'];
+      carousels.forEach(id => {
+        const carousel = bootstrap.Carousel.getInstance(document.getElementById(id));
+        if (carousel) carousel.pause();
+      });
+    }
+    
+    // Store clicked anime in session storage
+    document.querySelectorAll('[data-anime-id]').forEach(link => {
+      link.addEventListener('click', function() {
+        const animeId = this.getAttribute('data-anime-id');
+        sessionStorage.setItem('lastViewedAnime', animeId);
+      });
+    });
+    
+    // Initialize carousels
+    document.addEventListener('DOMContentLoaded', function() {
+      const aotdCarousel = new bootstrap.Carousel(document.getElementById('animeOfTheDay'), {
+        interval: 10000
+      });
+      
+      const popularCarousel = new bootstrap.Carousel(document.getElementById('popularAnime'), {
+        interval: 5000
+      });
+      
+      const latestCarousel = new bootstrap.Carousel(document.getElementById('latestReleases'), {
+        interval: 5000
+      });
+      
+      // Resume carousels when search is cleared
+      document.getElementById('searchInput').addEventListener('input', function(e) {
+        if (e.target.value.trim() === '') {
+          [aotdCarousel, popularCarousel, latestCarousel].forEach(carousel => {
+            if (carousel) carousel.cycle();
+          });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
